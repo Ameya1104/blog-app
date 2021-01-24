@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %} Login {% endblock %}
+
+{% block content %}
+
+<div class="ui text center container segment">
+    <h2>Login Form</h2>
+
+    <div class="row">
+        <div class="ui container segment">
+            <form class="ui form" method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="ui secondary button">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

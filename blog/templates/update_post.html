@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %} Update {{ post.title }} {% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+    {% if user.id == post.author.id %}
+    <!-- <div class="ui text center container segment"> -->
+        <h2>Update {{ post.title }}</h2>
+
+        <div class="row">
+            <div class="ui container segment">
+                <form class="ui form" method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="ui secondary button">Update</button>
+                </form>
+            </div>
+        </div>
+
+    {% else %}
+        <div class="ui form">
+            <div class="ui message">
+            <div class="header"> You are not allowed here!</div>
+            <ul class="list">
+                <li><strong><a href="{% url 'index' %}" class="small ui secondary button">Go Back</a></strong></li>
+            </ul>
+            </div>
+        </div>
+    
+        <!-- </div> -->
+    {% endif %}
+  
+{% else %}
+
+    <div class="ui form">
+        <div class="ui message">
+        <div class="header"> You are not allowed here!</div>
+        <ul class="list">
+            <li><strong><a href="{% url 'index' %}" class="small ui secondary button">Go Back</a></strong></li>
+        </ul>
+        </div>
+    </div>
+
+{% endif %}
+
+{% endblock %}

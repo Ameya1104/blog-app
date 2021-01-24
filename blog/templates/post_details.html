@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} {{ post.title }} {% endblock %}
+
+{% block content %}
+
+<!-- <div class="ui text center container segment"> -->
+    <div class="row">
+        <div class="ui container segment">
+            <h3>{{ post.title }} </h3>
+            <div class="ui right aligned container"> 
+                <strong> Submitted by {{ post.author.first_name }} {{ post.author.last_name }} </strong>
+                <br>
+                <strong> Created on {{ post.created_on}} </strong>
+            </div>
+            {% if post.header_image %}
+                <div class="ui container segment">
+                    <img class="ui medium image" src="{{ post.header_image.url }}">  
+                </div>
+            {% endif %}
+            {% if user.is_authenticated %}
+                {% if user.id == post.author.id %}
+                    <p>
+                        <a href="{% url 'update_post' post.pk %}" class="tiny ui inverted orange button">Edit</a>
+                        <a href="{% url 'delete_post' post.pk %}" class="tiny ui inverted red button">Delete</a>
+                    </p>
+                {% endif %}                    
+            {% endif %}
+            <hr>
+            <div class="ui container segment">
+                <strong> {{ post.body|safe }} </strong> 
+            </div>
+            <p></p>
+            <a href="{% url 'index' %}" class="small ui secondary button">Go Back</a>
+            <p></p>
+            {% if user.is_authenticated %}
+                <div class="ui container">
+                    <div class="row">
+                        <form action="{% url 'like_post' post.pk %}" method="POST">
+                            {% csrf_token %}
+                            <div class="ui labeled button" tabindex="0">
+                                <button type="submit" name="post_id" value="{{post.id}}" class="ui button">
+                                    <i class="heart icon"></i> Like
+                                </button>
+                                <a class="ui basic label">{{ total_likes }}</a>
+                            </div>
+                        </form>
+                        <form action="{% url 'dislike_post' post.pk %}" method="POST">
+                            {% csrf_token %}
+                            <div class="ui labeled button" tabindex="0">
+                                <button type="submit" name="post_id" value="{{post.id}}" class="ui red button">
+                                    <i class="heart icon"></i> DisLike
+                                </button>
+                                <a class="ui basic label">{{ total_dislikes }}</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="ui container segment">
+            <h3><strong>Comments</strong></h3>
+            <hr>
+            <div class="ui container">
+                <a href="{% url 'add_comment' post.pk %}" class="ui secondary button">Add comments</a>
+            </div>
+            <br>
+            {% if post.comments.all %}
+                {% for comment in post.comments.all %}
+                    <div class="ui container">
+                        <p class="ui right aligned"><strong>By {{ comment.name }} on {{ comment.date_added }}</strong></p>
+                        <div class="ui container segment">
+                            <strong>{{ comment.body }}</strong>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="ui form">
+                    <div class="ui message">
+                        <div class="header">There have no comments so far!</div>
+                        <p></p>
+                        <ul class="list">
+                            <li><strong><a href="{% url 'add_comment' post.pk %}" class="small ui secondary button">Click here to comment</a></li></strong>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="ui container segment">
+            <div class="card mb-3">
+                <div class="row no-gutters">
+                    <div class="col-md-3">
+                        {% if post.author.profile.profile_pic.url != null %}
+                            <img src="{{ post.author.profile.profile_pic.url }}" class="card-img rounded-circle">
+                        {% else %}
+                            <img src="{% static 'theblog/images/default_profile_pic.png' %}" class="card-img rounded-circle">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-9">
+                        <div class="card-body">
+                            <h3 class="card-title">{{ post.author.first_name }} {{ post.author.last_name }} </h3>
+                            <p class="card-text text-muted">
+                            
+                                {% if post.author.profile.website_url %}
+                                    <a href="{{ post.author.profile.website_url }}"> Website </a> | 
+                                {% endif %}
+                                {% if post.author.profile.instagram_url %}
+                                    <a href="{{ post.author.profile.instagram_url }}"> Instagram </a> | 
+                                {% endif %}
+                                {% if post.author.profile.twitter_url %}
+                                    <a href="{{ post.author.profile.twitter_url }}"> Twitter </a> |
+                                {% endif %}
+                                {% if post.author.profile.facebook_url %}
+                                    <a href="{{ post.author.profile.facebook_url }}"> Facebook </a> |
+                                {% endif %}
+                            </p>
+                            <p class="card-text"><strong>{{ post.author.profile.bio }}</strong></p>
+                            <p class="card-text"><small class="text-muted">Created on {{ post.created_on}}</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- </div> -->
+
+{% endblock %}

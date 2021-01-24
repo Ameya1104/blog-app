@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- <div class="ui text center container segment"> -->
+    <h2>Welcome to Blog App!</h2>
+    <p><a class="small ui secondary button" href="{% url 'add_post' %}">Add new post</a></p>
+    <div class="row">
+        {% for post in object_list %}
+            <div class="ui container segment">
+                <h3>{{ post.title }} </h3>
+                {% if post.header_image %}
+                    <div class="ui container segment">
+                        <img class="ui medium image" src="{{ post.header_image.url }}">  
+                    </div>
+                {% endif %}
+                <a href="{% url 'category' post.category|slugify %}"><strong> Blog Category : {{ post.category }} </strong> </a>
+                <div class="ui right aligned container"> 
+                    <strong> Submitted by {{ post.author.first_name }} {{ post.author.last_name }} </strong>
+                    <br>
+                    <strong> Created on {{ post.created_on}} </strong>
+                </div>
+                <br>
+                <div class="ui container segment">
+                    <strong> {{ post.body|slice:":200"|safe}} ... </strong> 
+                </div>
+                
+                <p></p>
+                <a class="small ui secondary button" href="{% url 'post_detail' post.pk %}">More Info</a>
+                <p></p>
+                {% if user.is_authenticated %}
+                    {% if user.id == post.author.id %}
+                        <p>
+                            <a href="{% url 'update_post' post.pk %}" class="tiny ui inverted orange button">Edit</a>
+                            <a href="{% url 'delete_post' post.pk %}" class="tiny ui inverted red button">Delete</a>
+                        </p>
+                    {% endif %}
+                {% endif %}
+                <br>
+            </div>
+        {% endfor %}
+    </div>
+<!-- </div> -->
+
+{% endblock %}

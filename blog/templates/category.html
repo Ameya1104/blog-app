@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if category_posts %}
+    <h3> Category : {{ cats }} </h3>
+
+    {% for post in category_posts %}
+        <!-- <div class="ui text center container segment"> -->
+        <div class="row">
+            <div class="ui container segment">
+                <h3>{{ post.title }} </h3>
+                <div class="ui right aligned container"> 
+                    <strong> Submitted by {{ post.author.first_name }} {{ post.author.last_name }}</strong>
+                    <br>
+                    <strong> Created on {{ post.created_on}} </strong>
+                </div>
+                {% if user.is_authenticated %}
+                    <p>
+                        <a href="{% url 'update_post' post.pk %}" class="tiny ui inverted orange button">Edit</a>
+                        <a href="{% url 'delete_post' post.pk %}" class="tiny ui inverted red button">Delete</a>
+                    </p>
+                {% endif %}
+                <hr>
+                <div class="ui container segment">
+                    <strong> {{ post.body|safe }} </strong> 
+                </div>
+                <p></p>
+                <a href="{% url 'index' %}" class="small ui secondary button">Go Back</a>
+            </div>
+        </div>
+        <!-- </div> -->
+    {% endfor %}
+
+{% else %}
+    <div class="ui form">
+        <div class="ui message">
+            <div class="header">Sorry! This page does not exist</div>
+        </div>
+    </div>
+
+{% endif %}
+
+{% endblock %}
